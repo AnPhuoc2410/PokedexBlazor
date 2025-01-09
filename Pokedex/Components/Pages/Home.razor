@@ -11,6 +11,11 @@
     <div class="text-center mb-4">
         <h3>Pokedex</h3>
     </div>
+    <div class="row mb-4">
+        <div class="col-md-6 offset-md-3">
+            <input type="text" class="form-control" placeholder="Search Pokémon" @bind="searchQuery" @oninput="SearchPokemon" />
+        </div>
+    </div>
     <div class="row">
         @foreach (var pokemon in paginatedPokemons)
         {
@@ -57,9 +62,11 @@
 @code {
     List<Pokemon> pokemons = new List<Pokemon>();
     List<Pokemon> paginatedPokemons = new List<Pokemon>();
+    string searchQuery = string.Empty;
     int currentPage = 1;
     int pageSize = 3; // Number of Pokémon per page
-    int totalPages => (int)Math.Ceiling((double)pokemons.Count / pageSize);
+    int totalPages => (int)Math.Ceiling((double)filteredPokemons.Count / pageSize);
+    List<Pokemon> filteredPokemons => string.IsNullOrEmpty(searchQuery) ? pokemons : pokemons.Where(p => p.name.Contains(searchQuery, StringComparison.OrdinalIgnoreCase)).ToList();
 
     protected override async Task OnInitializedAsync()
     {
@@ -75,7 +82,7 @@
 
     void UpdatePaginatedPokemons()
     {
-        paginatedPokemons = pokemons.Skip((currentPage - 1) * pageSize).Take(pageSize).ToList();
+        paginatedPokemons = filteredPokemons.Skip((currentPage - 1) * pageSize).Take(pageSize).ToList();
     }
 
     void PreviousPage()
@@ -99,6 +106,13 @@
     void GoToPage(int pageNumber)
     {
         currentPage = pageNumber;
+        UpdatePaginatedPokemons();
+    }
+
+    void SearchPokemon(ChangeEventArgs e)
+    {
+        searchQuery = e.Value.ToString();
+        currentPage = 1;
         UpdatePaginatedPokemons();
     }
 }
