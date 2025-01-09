@@ -1,5 +1,5 @@
 using Pokedex.Components;
-
+using Pokedex.Components.Util;
 namespace Pokedex
 {
     public class Program
@@ -12,18 +12,22 @@ namespace Pokedex
             builder.Services.AddRazorComponents()
                 .AddInteractiveServerComponents();
 
+            // Register HttpClient
+            builder.Services.AddHttpClient();
+
+            // Register PokeClient as a singleton service
+            builder.Services.AddSingleton<PokeClient>();
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())
             {
                 app.UseExceptionHandler("/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
 
             app.UseHttpsRedirection();
-
             app.UseStaticFiles();
             app.UseAntiforgery();
 

@@ -1,0 +1,31 @@
+﻿@page "/pokeapi"
+@using Pokedex.Components.Models
+@using Pokedex.Components.Util
+@inject PokeClient client
+
+<h3>Pokedex</h3>
+@foreach (var pokemon in pokemons)
+{
+    <div>
+        <h1>@pokemon.name</h1>
+        <p>@pokemon.id</p>
+        <p>@pokemon.height</p>
+        <p>@pokemon.weight</p>
+        <p>@pokemon.base_experience</p>
+    </div>
+}
+
+@code {
+    List<Pokemon> pokemons = new List<Pokemon>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var tasks = new List<Task<Pokemon>>();
+        for (int i = 1; i <= 100; i++)
+        {
+            tasks.Add(client.GetPokemon(i.ToString()));
+        }
+
+        pokemons = (await Task.WhenAll(tasks)).ToList();
+    }
+}

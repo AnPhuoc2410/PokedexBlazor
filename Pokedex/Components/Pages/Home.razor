@@ -1,7 +1,104 @@
 ﻿@page "/"
+@using Pokedex.Components.Models
+@using Pokedex.Components.Util
+@inject PokeClient client
 
 <PageTitle>Home</PageTitle>
 
-<h1>Hello, world!</h1>
+<h1 class="text-center my-4">Hello, world!</h1>
 
-Welcome to your new app.
+<div class="container">
+    <div class="text-center mb-4">
+        <h3>Pokedex</h3>
+    </div>
+    <div class="row">
+        @foreach (var pokemon in paginatedPokemons)
+        {
+            <div class="col-md-4 mb-4">
+                <div class="card h-100">
+                    <img src="@pokemon.sprites.front_default" class="card-img-top" alt="@pokemon.name">
+                    <div class="card-body">
+                        <h5 class="card-title">@pokemon.name</h5>
+                        <p class="card-text">ID: @pokemon.id</p>
+                        <p class="card-text">Height: @pokemon.height</p>
+                        <p class="card-text">Weight: @pokemon.weight</p>
+                        <p class="card-text">Base Experience: @pokemon.base_experience</p>
+                        <p class="card-text">Type: @string.Join(", ", pokemon.types.Select(t => t.type.name))</p>
+                        <p class="card-text">Moves:</p>
+                        <ul>
+                            @foreach (var move in pokemon.moves.Take(5)) // Displaying first 5 moves for brevity
+                            {
+                                <li>@move.move.name</li>
+                            }
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+    <nav>
+        <ul class="pagination justify-content-center">
+            <li class="page-item @(currentPage == 1 ? "disabled" : "")">
+                <button class="page-link" @onclick="PreviousPage">Previous</button>
+            </li>
+            @for (int i = 1; i <= totalPages; i++)
+            {
+                <li class="page-item @(currentPage == i ? "active" : "")">
+                    <button class="page-link" @onclick="() => GoToPage(i)">@i</button>
+                </li>
+            }
+            <li class="page-item @(currentPage == totalPages ? "disabled" : "")">
+                <button class="page-link" @onclick="NextPage">Next</button>
+            </li>
+        </ul>
+    </nav>
+</div>
+
+@code {
+    List<Pokemon> pokemons = new List<Pokemon>();
+    List<Pokemon> paginatedPokemons = new List<Pokemon>();
+    int currentPage = 1;
+    int pageSize = 3; // Number of Pokémon per page
+    int totalPages => (int)Math.Ceiling((double)pokemons.Count / pageSize);
+
+    protected override async Task OnInitializedAsync()
+    {
+        var tasks = new List<Task<Pokemon>>();
+        for (int i = 1; i <= 30; i++) // Fetching 30 Pokémon for demonstration
+        {
+            tasks.Add(client.GetPokemon(i.ToString()));
+        }
+
+        pokemons = (await Task.WhenAll(tasks)).ToList();
+        UpdatePaginatedPokemons();
+    }
+
+    void UpdatePaginatedPokemons()
+    {
+        paginatedPokemons = pokemons.Skip((currentPage - 1) * pageSize).Take(pageSize).ToList();
+    }
+
+    void PreviousPage()
+    {
+        if (currentPage > 1)
+        {
+            currentPage--;
+            UpdatePaginatedPokemons();
+        }
+    }
+
+    void NextPage()
+    {
+        if (currentPage < totalPages)
+        {
+            currentPage++;
+            UpdatePaginatedPokemons();
+        }
+    }
+
+    void GoToPage(int pageNumber)
+    {
+        currentPage = pageNumber;
+        UpdatePaginatedPokemons();
+    }
+}
