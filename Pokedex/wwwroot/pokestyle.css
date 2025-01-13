@@ -1,4 +1,11 @@
-﻿.type-grass {
+﻿@font-face {
+    font-family: 'JetBrains';
+    src: url('/fonts/JetBrains.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+.type-grass {
     color: #78C850;
     background-color: #e0f7da; /* Light green highlight */
     font-weight: bold;
@@ -98,4 +105,45 @@
     color: #EE99AC;
     background-color: #ffe0f0; /* Light pink highlight */
     font-weight: bold;
+}
+
+.bg-brown {
+    background-color: #D4A373;
+}
+
+.bg-purple {
+    background-color: #A020F0;
+}
+
+.bg-cyan {
+    background-color: #00FFFF;
+}
+
+.bg-silver {
+    background-color: #C0C0C0;
+}
+.pokemon-card {
+    margin: 10px;
+    padding: 10px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+    -webkit-align-items: center;
+    align-items: center;
+    -webkit-justify-content: center;
+
+}
+.pokemon-name {
+    font-family: 'JetBrains', sans-serif;
+    text-transform: capitalize;
+    -webkit-text-decoration: none;
+    text-decoration: none;
+    color: #000;
+    text-align: center
+}
+
+.card-img-top {
+    image-rendering: optimizeQuality;
+    width: 100%;
+    height: auto;
 }

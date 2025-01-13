@@ -5,44 +5,57 @@
 
 <PageTitle>Home</PageTitle>
 
-<h1 class="text-center my-4">Hello, world!</h1>
+<h1 class="text-center my-4 text-primary fw-bold">Pokédex</h1>
 
 <div class="container">
-    <div class="text-center mb-4">
-        <h3>Pokedex</h3>
-    </div>
-    <div class="row">
+    <div class="row g-4 d-flex flex-wrap justify-content-center align-items-center">
         @foreach (var pokemon in pokemons)
         {
-            <div class="col-md-4 mb-4">
-                <div class="card h-100">
-                    <img src="@pokemon.sprites.front_default" class="card-img-top" alt="@pokemon.name">
-                    <div class="card-body">
-                        <h5 class="card-title">@pokemon.name</h5>
-                        <p class="card-text">ID: @pokemon.id</p>
-                        <p class="card-text">Height: @pokemon.height</p>
-                        <p class="card-text">Weight: @pokemon.weight</p>
-                        <p class="card-text">Base Experience: @pokemon.base_experience</p>
-                        <p class="card-text">
-                            Type: 
-                            @foreach (var type in pokemon.types)
-                            {
-                                <span class="@(GetTypeClass(type.type.name))">@type.type.name</span>
-                            }
-                        </p>
-                        <p class="card-text">Moves:</p>
-                        <ul>
-                            @foreach (var move in pokemon.moves.Take(5)) // Displaying first 5 moves for brevity
-                            {
-                                <li>@move.move.name</li>
-                            }
-                        </ul>
+            <div class="col-lg-4 col-md-6">
+                <div class="card shadow-sm h-100 border-0 rounded">
+                    <img src="@pokemon.sprites.front_default" class="card-img-top rounded-top" alt="@pokemon.name" loading="lazy">
+                    <div class="card-body pokemon-card">
+                        <h5 class="card-title pokemon-name">@pokemon.name</h5>
+                        <div class="d-flex justify-content-between mb-2">
+                            <p class="mb-0"><strong>ID:</strong> @pokemon.id</p>
+                            <p class="mb-0"><strong>Height:</strong> @pokemon.height</p>
+                        </div>
+                        <div class="d-flex justify-content-between mb-2">
+                            <p class="mb-0"><strong>Weight:</strong> @pokemon.weight</p>
+                            <p class="mb-0"><strong>Base XP:</strong> @pokemon.base_experience</p>
+                        </div>
+                        <div class="mb-2">
+                            <div class="d-flex justify-content-center gap-1 mt-1">
+                                @foreach (var type in pokemon.types)
+                                {
+                                    <span class="badge" style="background-color:@(TypeColor.GetColor(type.type.name)); color: white;">@type.type.name.ToUpper()</span>
+                                }
+                            </div>
+                        </div>
+                        <div>
+                            <strong>Moves:</strong>
+                            <div class="d-flex flex-wrap gap-2 mt-2">
+                                @foreach (var move in pokemon.moves.Take(5))
+                                {
+                                    <span class="badge bg-light text-dark border">@move.move.name</span>
+                                }
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         }
     </div>
 </div>
+@if (pokemons.Count == 0)
+{
+    <div class="text-center my-5">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+        <p>Loading Pokémon...</p>
+    </div>
+}
 
 @code {
     List<Pokemon> pokemons = new List<Pokemon>();
@@ -53,33 +66,9 @@
         for (int i = 1; i <= 9; i++)
         {
             tasks.Add(client.GetPokemon(i.ToString()));
+            StateHasChanged();
         }
 
         pokemons = (await Task.WhenAll(tasks)).ToList();
-    }
-
-    private string GetTypeClass(string typeName)
-    {
-        return typeName.ToLower() switch
-        {
-            "grass" => "type-grass",
-            "fire" => "type-fire",
-            "water" => "type-water",
-            "electric" => "type-electric",
-            "ice" => "type-ice",
-            "fighting" => "type-fighting",
-            "poison" => "type-poison",
-            "ground" => "type-ground",
-            "flying" => "type-flying",
-            "psychic" => "type-psychic",
-            "bug" => "type-bug",
-            "rock" => "type-rock",
-            "ghost" => "type-ghost",
-            "dragon" => "type-dragon",
-            "dark" => "type-dark",
-            "steel" => "type-steel",
-            "fairy" => "type-fairy",
-            _ => ""
-        };
     }
 }
