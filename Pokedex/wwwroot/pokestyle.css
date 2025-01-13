@@ -1,0 +1,101 @@
+﻿.type-grass {
+    color: #78C850;
+    background-color: #e0f7da; /* Light green highlight */
+    font-weight: bold;
+}
+
+.type-fire {
+    color: #F08030;
+    background-color: #ffe0cc; /* Light orange highlight */
+    font-weight: bold;
+}
+
+.type-water {
+    color: #6890F0;
+    background-color: #e0f0ff; /* Light blue highlight */
+    font-weight: bold;
+}
+
+.type-electric {
+    color: #F8D030;
+    background-color: #fff7cc; /* Light yellow highlight */
+    font-weight: bold;
+}
+
+.type-ice {
+    color: #98D8D8;
+    background-color: #e0f7f7; /* Light cyan highlight */
+    font-weight: bold;
+}
+
+.type-fighting {
+    color: #C03028;
+    background-color: #f7e0e0; /* Light red highlight */
+    font-weight: bold;
+}
+
+.type-poison {
+    color: #A040A0;
+    background-color: #f7e0f7; /* Light purple highlight */
+    font-weight: bold;
+}
+
+.type-ground {
+    color: #E0C068;
+    background-color: #f7f0e0; /* Light brown highlight */
+    font-weight: bold;
+}
+
+.type-flying {
+    color: #A890F0;
+    background-color: #f0e0f7; /* Light lavender highlight */
+    font-weight: bold;
+}
+
+.type-psychic {
+    color: #F85888;
+    background-color: #ffe0e7; /* Light pink highlight */
+    font-weight: bold;
+}
+
+.type-bug {
+    color: #A8B820;
+    background-color: #f7f7e0; /* Light yellow-green highlight */
+    font-weight: bold;
+}
+
+.type-rock {
+    color: #B8A038;
+    background-color: #f7f7e0; /* Light beige highlight */
+    font-weight: bold;
+}
+
+.type-ghost {
+    color: #705898;
+    background-color: #e7e0f7; /* Light violet highlight */
+    font-weight: bold;
+}
+
+.type-dragon {
+    color: #7038F8;
+    background-color: #e7e0ff; /* Light purple highlight */
+    font-weight: bold;
+}
+
+.type-dark {
+    color: #705848;
+    background-color: #e7e0e0; /* Light gray highlight */
+    font-weight: bold;
+}
+
+.type-steel {
+    color: #B8B8D0;
+    background-color: #f0f0f7; /* Light steel blue highlight */
+    font-weight: bold;
+}
+
+.type-fairy {
+    color: #EE99AC;
+    background-color: #ffe0f0; /* Light pink highlight */
+    font-weight: bold;
+}

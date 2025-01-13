@@ -11,13 +11,8 @@
     <div class="text-center mb-4">
         <h3>Pokedex</h3>
     </div>
-    <div class="row mb-4">
-        <div class="col-md-6 offset-md-3">
-            <input type="text" class="form-control" placeholder="Search Pokémon" @bind="searchQuery" @oninput="SearchPokemon" />
-        </div>
-    </div>
     <div class="row">
-        @foreach (var pokemon in paginatedPokemons)
+        @foreach (var pokemon in pokemons)
         {
             <div class="col-md-4 mb-4">
                 <div class="card h-100">
@@ -28,7 +23,13 @@
                         <p class="card-text">Height: @pokemon.height</p>
                         <p class="card-text">Weight: @pokemon.weight</p>
                         <p class="card-text">Base Experience: @pokemon.base_experience</p>
-                        <p class="card-text">Type: @string.Join(", ", pokemon.types.Select(t => t.type.name))</p>
+                        <p class="card-text">
+                            Type: 
+                            @foreach (var type in pokemon.types)
+                            {
+                                <span class="@(GetTypeClass(type.type.name))">@type.type.name</span>
+                            }
+                        </p>
                         <p class="card-text">Moves:</p>
                         <ul>
                             @foreach (var move in pokemon.moves.Take(5)) // Displaying first 5 moves for brevity
@@ -41,78 +42,44 @@
             </div>
         }
     </div>
-    <nav>
-        <ul class="pagination justify-content-center">
-            <li class="page-item @(currentPage == 1 ? "disabled" : "")">
-                <button class="page-link" @onclick="PreviousPage">Previous</button>
-            </li>
-            @for (int i = 1; i <= totalPages; i++)
-            {
-                <li class="page-item @(currentPage == i ? "active" : "")">
-                    <button class="page-link" @onclick="() => GoToPage(i)">@i</button>
-                </li>
-            }
-            <li class="page-item @(currentPage == totalPages ? "disabled" : "")">
-                <button class="page-link" @onclick="NextPage">Next</button>
-            </li>
-        </ul>
-    </nav>
 </div>
 
 @code {
     List<Pokemon> pokemons = new List<Pokemon>();
-    List<Pokemon> paginatedPokemons = new List<Pokemon>();
-    string searchQuery = string.Empty;
-    int currentPage = 1;
-    int pageSize = 3; // Number of Pokémon per page
-    int totalPages => (int)Math.Ceiling((double)filteredPokemons.Count / pageSize);
-    List<Pokemon> filteredPokemons => string.IsNullOrEmpty(searchQuery) ? pokemons : pokemons.Where(p => p.name.Contains(searchQuery, StringComparison.OrdinalIgnoreCase)).ToList();
 
     protected override async Task OnInitializedAsync()
     {
         var tasks = new List<Task<Pokemon>>();
-        for (int i = 1; i <= 30; i++) // Fetching 30 Pokémon for demonstration
+        for (int i = 1; i <= 9; i++)
         {
             tasks.Add(client.GetPokemon(i.ToString()));
         }
 
         pokemons = (await Task.WhenAll(tasks)).ToList();
-        UpdatePaginatedPokemons();
     }
 
-    void UpdatePaginatedPokemons()
+    private string GetTypeClass(string typeName)
     {
-        paginatedPokemons = filteredPokemons.Skip((currentPage - 1) * pageSize).Take(pageSize).ToList();
-    }
-
-    void PreviousPage()
-    {
-        if (currentPage > 1)
+        return typeName.ToLower() switch
         {
-            currentPage--;
-            UpdatePaginatedPokemons();
-        }
-    }
-
-    void NextPage()
-    {
-        if (currentPage < totalPages)
-        {
-            currentPage++;
-            UpdatePaginatedPokemons();
-        }
-    }
-
-    void GoToPage(int pageNumber)
-    {
-        currentPage = pageNumber;
-        UpdatePaginatedPokemons();
-    }
-
-    void SearchPokemon(ChangeEventArgs e)
-    {
-        searchQuery = e.Value.ToString();
-        currentPage = 1;
-        UpdatePaginatedPokemons();
+            "grass" => "type-grass",
+            "fire" => "type-fire",
+            "water" => "type-water",
+            "electric" => "type-electric",
+            "ice" => "type-ice",
+            "fighting" => "type-fighting",
+            "poison" => "type-poison",
+            "ground" => "type-ground",
+            "flying" => "type-flying",
+            "psychic" => "type-psychic",
+            "bug" => "type-bug",
+            "rock" => "type-rock",
+            "ghost" => "type-ghost",
+            "dragon" => "type-dragon",
+            "dark" => "type-dark",
+            "steel" => "type-steel",
+            "fairy" => "type-fairy",
+            _ => ""
+        };
     }
 }
