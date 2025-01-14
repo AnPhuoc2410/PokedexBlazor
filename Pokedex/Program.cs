@@ -17,7 +17,6 @@ namespace Pokedex
 
             // Register PokeClient as a singleton service
             builder.Services.AddSingleton<PokeClient>();
-
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -34,7 +33,7 @@ namespace Pokedex
             app.MapRazorComponents<App>()
                 .AddInteractiveServerRenderMode();
 
-            app.Run();
+            app.RunAsync().GetAwaiter().GetResult();
         }
     }
 }

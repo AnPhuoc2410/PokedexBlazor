@@ -1,7 +1,9 @@
 ﻿@page "/"
+@rendermode InteractiveServer
 @using Pokedex.Components.Models
 @using Pokedex.Components.Util
 @inject PokeClient client
+@inject NavigationManager Navigation
 
 <PageTitle>Home</PageTitle>
 <div class="container">
@@ -10,32 +12,19 @@
         @foreach (var pokemon in pokemons)
         {
             <div class="col-lg-4 col-md-6">
-                <div class="card shadow-sm h-100 border-0 rounded">
+                <div class="card pokemon-card border-0 rounded" style="height: 100%;" @onclick="() => NavigateToDetails(pokemon.id)">
+                    <!-- ID Badge in the Corner -->
+                    <div class="pokemon-id-badge">
+                        <strong>#@pokemon.id</strong>
+                    </div>
                     <img src="@pokemon.sprites.front_default" class="card-img-top rounded-top" alt="@pokemon.name" loading="lazy">
-                    <div class="card-body pokemon-card">
+                    <div class="card-body">
                         <h5 class="card-title pokemon-name">@pokemon.name</h5>
-                        <div class="d-flex justify-content-between mb-2">
-                            <p class="mb-0"><strong>ID:</strong> @pokemon.id</p>
-                            <p class="mb-0"><strong>Height:</strong> @pokemon.height</p>
-                        </div>
-                        <div class="d-flex justify-content-between mb-2">
-                            <p class="mb-0"><strong>Weight:</strong> @pokemon.weight</p>
-                            <p class="mb-0"><strong>Base XP:</strong> @pokemon.base_experience</p>
-                        </div>
                         <div class="mb-2">
                             <div class="d-flex justify-content-center gap-1 mt-1">
                                 @foreach (var type in pokemon.types)
                                 {
-                                    <span class="badge" style="background-color:@(TypeColor.GetColor(type.type.name)); color: white;">@type.type.name.ToUpper()</span>
-                                }
-                            </div>
-                        </div>
-                        <div>
-                            <strong>Moves:</strong>
-                            <div class="d-flex flex-wrap gap-2 mt-2">
-                                @foreach (var move in pokemon.moves.Take(5))
-                                {
-                                    <span class="badge bg-light text-dark border">@move.move.name</span>
+                                    <span class="type-badge" style="background-color:@(TypeColor.GetColor(type.type.name))">@type.type.name.ToUpper()</span>
                                 }
                             </div>
                         </div>
@@ -61,12 +50,16 @@
     protected override async Task OnInitializedAsync()
     {
         var tasks = new List<Task<Pokemon>>();
-        for (int i = 1; i <= 9; i++)
+        for (int i = 1; i <= 151; i++)
         {
             tasks.Add(client.GetPokemon(i.ToString()));
-            StateHasChanged();
         }
 
         pokemons = (await Task.WhenAll(tasks)).ToList();
+    }
+
+    private void NavigateToDetails(int pokeID)
+    {
+        Navigation.NavigateTo($"/pokeapi/{pokeID}");
     }
 }
