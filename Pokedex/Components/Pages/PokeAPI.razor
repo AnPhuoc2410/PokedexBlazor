@@ -3,59 +3,112 @@
 @using Pokedex.Components.Util
 @inject PokeClient client
 
-<div class="container py-5">
+<div class="container my-5">
     @if (poke != null)
     {
-        <div class="card mb-6 shadow-sm" style="max-width: 600px; border-radius: 15px; overflow: hidden;">
-            <!-- Pokémon Image Section -->
-            @if (poke.types.Count > 0)
-            {
-                <div class="card-top text-center p-3" style="background: linear-gradient(90deg, @TypeColor.GetColor(@poke.types[0].type.name), #fff);">
-                    <img src="@poke.sprites.front_default" alt="@poke.name sprite" class="pokemon-img" style="max-height: 200px;">
-                </div>
-            }
+        <!-- Main Image and Artwork Section -->
+        <div class="row mb-6">
+            <div class="col-md-6 text-center">
+                <img src="@poke.sprites.other.dream_world.front_default" alt="@poke.name" class="pokemon-main-img">
+            </div>
+            <div class="col-md-6">
+                <h2><strong>@poke.name.ToUpper()</strong></h2>
+                <p><strong>Height:</strong> @poke.height m</p>
+                <p><strong>Weight:</strong> @poke.weight kg</p>
+                <p>
+                    <strong>Abilities:</strong>
+                    @foreach (var ability in poke.abilities)
+                    {
+                        <span>@ability.ability.name</span>
 
-            <!-- Pokémon Info Section -->
-            <div class="card-body">
-                <h1 class="text-center" style="font-weight: bold; text-transform: capitalize;">@poke.name</h1>
-                <div class="text-center mb-3">
+                        @(ability.is_hidden ? " (Hidden)" : "")
+
+                        @((poke.abilities.Last() != ability) ? ", " : "")
+                    }
+                </p>
+                <p>
+                    <strong>Type:</strong>
                     @foreach (var type in poke.types)
                     {
-                        <span class="badge type-badge" style="background-color: @TypeColor.GetColor(type.type.name);">
-                            @type.type.name
-                        </span>
+                        <span class="badge" style="background-color: @TypeColor.GetColor(type.type.name); color: white;">@type.type.name.ToUpper()</span>
                     }
-                </div>
-
-                <div class="d-flex justify-content-between mb-3">
-                    <h5><strong>Height:</strong> @poke.height m</h5>
-                    <h5><strong>Weight:</strong> @poke.weight kg</h5>
-                </div>
-
-                
+                </p>
             </div>
-            <div class="mb-6">
-                <!-- Stats Section -->
-                <h3 class="text-center mb-3">Stats</h3>
-                @foreach (var stat in poke.stats)
-                {
-                    <div class="mb-2">
-                        <h6 class="mb-1" style="text-transform: capitalize;">@stat.stat.name</h6>
-                        <div class="progress">
-                            <div class="progress-bar progress-bar-striped" role="progressbar"
-                                 style="width: @stat.base_stat%; background-color: @StatColor.GetColor(stat.stat.name);"
-                                 aria-valuenow="@stat.base_stat" aria-valuemin="0" aria-valuemax="200">
-                                @stat.base_stat
-                            </div>
-                        </div>
-                    </div>
-                }
-            </div>
+        </div>
+
+        <!-- Base Stats Section -->
+        <div class="resp-scroll">
+            <table class="vitals-table">
+                <tbody>
+                    <tr>
+                        <th>HP</th>
+                        <td class="cell-num">106</td>
+                        <td class="cell-barchart">
+                            <div style="width:58.89%;" class="barchart-bar barchart-rank-4 "></div>
+                        </td>
+                        <td class="cell-num">322</td>
+                        <td class="cell-num">416</td>
+                    </tr>
+                    <tr>
+                        <th>Attack</th>
+                        <td class="cell-num">110</td>
+                        <td class="cell-barchart">
+                            <div style="width:61.11%;" class="barchart-bar barchart-rank-4 "></div>
+                        </td>
+                        <td class="cell-num">202</td>
+                        <td class="cell-num">350</td>
+                    </tr>
+                    <tr>
+                        <th>Defense</th>
+                        <td class="cell-num">90</td>
+                        <td class="cell-barchart">
+                            <div style="width:50.00%;" class="barchart-bar barchart-rank-4 "></div>
+                        </td>
+                        <td class="cell-num">166</td>
+                        <td class="cell-num">306</td>
+                    </tr>
+                    <tr>
+                        <th>Sp. Atk</th>
+                        <td class="cell-num">154</td>
+                        <td class="cell-barchart">
+                            <div style="width:85.56%;" class="barchart-bar barchart-rank-6 "></div>
+                        </td>
+                        <td class="cell-num">281</td>
+                        <td class="cell-num">447</td>
+                    </tr>
+                    <tr>
+                        <th>Sp. Def</th>
+                        <td class="cell-num">90</td>
+                        <td class="cell-barchart">
+                            <div style="width:50.00%;" class="barchart-bar barchart-rank-4 "></div>
+                        </td>
+                        <td class="cell-num">166</td>
+                        <td class="cell-num">306</td>
+                    </tr>
+                    <tr>
+                        <th>Speed</th>
+                        <td class="cell-num">130</td>
+                        <td class="cell-barchart">
+                            <div style="width:72.22%;" class="barchart-bar barchart-rank-5 "></div>
+                        </td>
+                        <td class="cell-num">238</td>
+                        <td class="cell-num">394</td>
+                    </tr>
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <th>Total</th>
+                        <td class="cell-num cell-total">680</td>
+                        <th class="cell-barchart"></th>
+                        <th>Min</th>
+                        <th>Max</th>
+                    </tr>
+                </tfoot>
+            </table>
         </div>
     }
     else
     {
-        <!-- Loading State -->
         <div class="text-center my-5">
             <div class="spinner-border text-primary" role="status">
                 <span class="visually-hidden">Loading...</span>

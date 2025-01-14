@@ -1,4 +1,43 @@
-﻿.pokemon-img {
+﻿.container {
+    max-width: 900px;
+    margin: auto;
+}
+
+.pokemon-main-img {
+    max-width: 100%;
+    height: auto;
+    border: 5px solid #f0f0f0;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.badge {
+    padding: 0.5em 0.8em;
+    border-radius: 10px;
+    font-size: 0.9em;
+    margin-right: 0.5em;
+}
+
+.progress {
+    height: 20px;
+    border-radius: 10px;
+}
+
+.progress-bar {
+    text-align: center;
+    font-weight: bold;
+}
+
+table {
+    width: 100%;
+}
+
+    table th, table td {
+        padding: 0.5em;
+        font-size: 0.9em;
+    }
+
+.pokemon-img {
     max-width: 100%;
     height: auto;
     border: 3px solid white;
