@@ -1,0 +1,14 @@
+﻿@page "/login"
+@using Pokedex.Components.Models
+@using Pokedex.Components.Util
+@inject PokeClient client
+
+
+<h3>Component aas.abilities</h3>
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        var aas = await client.GetPokemon("1");
+    }
+}

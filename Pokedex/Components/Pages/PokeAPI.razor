@@ -6,7 +6,7 @@
 <div class="container py-5">
     @if (poke != null)
     {
-        <div class="card mx-auto shadow-sm" style="max-width: 600px; border-radius: 15px; overflow: hidden;">
+        <div class="card mb-6 shadow-sm" style="max-width: 600px; border-radius: 15px; overflow: hidden;">
             <!-- Pokémon Image Section -->
             @if (poke.types.Count > 0)
             {
@@ -32,6 +32,9 @@
                     <h5><strong>Weight:</strong> @poke.weight kg</h5>
                 </div>
 
+                
+            </div>
+            <div class="mb-6">
                 <!-- Stats Section -->
                 <h3 class="text-center mb-3">Stats</h3>
                 @foreach (var stat in poke.stats)
