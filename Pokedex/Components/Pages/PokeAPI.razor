@@ -40,65 +40,25 @@
         <div class="resp-scroll">
             <table class="vitals-table">
                 <tbody>
-                    <tr>
-                        <th>HP</th>
-                        <td class="cell-num">106</td>
-                        <td class="cell-barchart">
-                            <div style="width:58.89%;" class="barchart-bar barchart-rank-4 "></div>
-                        </td>
-                        <td class="cell-num">322</td>
-                        <td class="cell-num">416</td>
-                    </tr>
-                    <tr>
-                        <th>Attack</th>
-                        <td class="cell-num">110</td>
-                        <td class="cell-barchart">
-                            <div style="width:61.11%;" class="barchart-bar barchart-rank-4 "></div>
-                        </td>
-                        <td class="cell-num">202</td>
-                        <td class="cell-num">350</td>
-                    </tr>
-                    <tr>
-                        <th>Defense</th>
-                        <td class="cell-num">90</td>
-                        <td class="cell-barchart">
-                            <div style="width:50.00%;" class="barchart-bar barchart-rank-4 "></div>
-                        </td>
-                        <td class="cell-num">166</td>
-                        <td class="cell-num">306</td>
-                    </tr>
-                    <tr>
-                        <th>Sp. Atk</th>
-                        <td class="cell-num">154</td>
-                        <td class="cell-barchart">
-                            <div style="width:85.56%;" class="barchart-bar barchart-rank-6 "></div>
-                        </td>
-                        <td class="cell-num">281</td>
-                        <td class="cell-num">447</td>
-                    </tr>
-                    <tr>
-                        <th>Sp. Def</th>
-                        <td class="cell-num">90</td>
-                        <td class="cell-barchart">
-                            <div style="width:50.00%;" class="barchart-bar barchart-rank-4 "></div>
-                        </td>
-                        <td class="cell-num">166</td>
-                        <td class="cell-num">306</td>
-                    </tr>
-                    <tr>
-                        <th>Speed</th>
-                        <td class="cell-num">130</td>
-                        <td class="cell-barchart">
-                            <div style="width:72.22%;" class="barchart-bar barchart-rank-5 "></div>
-                        </td>
-                        <td class="cell-num">238</td>
-                        <td class="cell-num">394</td>
-                    </tr>
+                    @foreach (var stat in poke.stats)
+                    {
+                        <tr>
+                            <th>@stat.stat.name.ToUpper()</th>
+                            <td class="cell-num">@stat.base_stat</td>
+                            <td class="cell-barchart">
+                                <div class="barchart-bar"
+                                     style="width: @(stat.base_stat * 100 / 255)%; background-color: @(StatColor.GetColor(stat.stat.name));">
+                                </div>
+                            </td>
+                            <td class="cell-num">@CalculateStat.GetMinValue(stat.base_stat)</td>
+                            <td class="cell-num">@CalculateStat.GetMaxValue(stat.base_stat)</td>
+                        </tr>
+                    }
                 </tbody>
                 <tfoot>
                     <tr>
                         <th>Total</th>
-                        <td class="cell-num cell-total">680</td>
+                        <td class="cell-num cell-total">@poke.stats.Sum(s => s.base_stat)</td>
                         <th class="cell-barchart"></th>
                         <th>Min</th>
                         <th>Max</th>
@@ -106,6 +66,7 @@
                 </tfoot>
             </table>
         </div>
+
     }
     else
     {
