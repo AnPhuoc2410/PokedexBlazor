@@ -7,10 +7,17 @@
 
 <PageTitle>Home</PageTitle>
 
+@if (isLoading)
+{
+    <div class="loading-overlay">
+        <img class="pokeball-spinner" src="img/pokeball.png" alt="Loading..." />
+    </div>
+}
+
 <div class="container">
     <img class="text-center w-75" src="img/PokedexBlazor.png" alt="Title" />
     <div class="row g-4 d-flex flex-wrap justify-content-center align-items-center">
-        @foreach (var pokemon in pokemons)
+        @foreach (var pokemon in DisplayedPokemons)
         {
             <div class="col-lg-4 col-md-6">
                 <div class="card pokemon-card border-0 rounded" style="height: 100%;" @onclick="() => NavigateToDetails(pokemon.id)">
@@ -35,18 +42,17 @@
         }
     </div>
 
-    @if (isLoading)
-    {
-        <div class="loading-overlay">
-            <img class="pokeball-spinner" src="img/pokeball.png" alt="Loading..." />
-        </div>
-    }
-    else if (hasMore)
-    {
-        <div class="text-center my-3">
-            <button class="btn btn-primary" @onclick="LoadMorePokemons">Load More</button>
-        </div>
-    }
+    <!-- Pagination Controls -->
+    <nav class="pagination-container">
+        <ul class="pagination">
+            @for (int i = 1; i <= TotalPages; i++)
+            {
+                <li class="page-item @(CurrentPage == i ? "active" : "")">
+                    <button class="page-link" @onclick="() => ChangePage(i)">@i</button>
+                </li>
+            }
+        </ul>
+    </nav>
 </div>
 
 @if (pokemons.Count == 0 && !isLoading)
@@ -58,36 +64,33 @@
 
 @code {
     private List<Pokemon> pokemons = new List<Pokemon>();
-    private int currentBatchSize = 9; 
-    private int totalLoaded = 0;      
-    private bool isLoading = false;   
-    private bool hasMore = true;      
+    private List<Pokemon> DisplayedPokemons = new List<Pokemon>();
+    private int ItemsPerPage = 9; // Number of items per page
+    private int CurrentPage = 1;
+    private int TotalPages = 1;
+
+    private bool isLoading = false;
 
     protected override async Task OnInitializedAsync()
     {
-        await LoadMorePokemons();
+        await LoadAllPokemons();
+        UpdateDisplayedPokemons();
     }
 
-    private async Task LoadMorePokemons()
+    private async Task LoadAllPokemons()
     {
-        if (isLoading || !hasMore) return;
-
         isLoading = true;
-
         try
         {
             var tasks = new List<Task<Pokemon>>();
-            for (int i = totalLoaded + 1; i <= totalLoaded + currentBatchSize; i++)
+            for (int i = 1; i <= 151; i++) // Load all Pokémon (up to 151)
             {
                 tasks.Add(client.GetPokemon(i.ToString()));
             }
+            pokemons = (await Task.WhenAll(tasks)).ToList();
 
-            var newPokemons = await Task.WhenAll(tasks);
-            pokemons.AddRange(newPokemons);
-            totalLoaded += currentBatchSize;
-
-            // Check if there are more Pokémon to load
-            hasMore = totalLoaded < 151; // Assuming the max Pokémon count is 151
+            // Calculate the total number of pages
+            TotalPages = (int)Math.Ceiling((double)pokemons.Count / ItemsPerPage);
         }
         catch (Exception ex)
         {
@@ -97,6 +100,23 @@
         {
             isLoading = false;
         }
+    }
+
+    private void UpdateDisplayedPokemons()
+    {
+        // Determine the Pokémon to display based on the current page
+        int startIndex = (CurrentPage - 1) * ItemsPerPage;
+        int endIndex = Math.Min(startIndex + ItemsPerPage, pokemons.Count);
+
+        DisplayedPokemons = pokemons.Skip(startIndex).Take(endIndex - startIndex).ToList();
+    }
+
+    private void ChangePage(int page)
+    {
+        if (page < 1 || page > TotalPages) return;
+
+        CurrentPage = page;
+        UpdateDisplayedPokemons();
     }
 
     private void NavigateToDetails(int pokeID)
